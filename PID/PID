@@ -1,0 +1,22 @@
+#include "stm32f10x.h"                  // Device header
+
+float Err=0,last_err=0,next_err=0,pwm=0,add=0,p=3.5,i=0.5,d=0;
+
+void pwm_control()
+{
+    if(pwm>99)
+        pwm=99;
+    if(pwm<0)
+        pwm=0;
+}
+
+float pid1(int16_t speed1,float tar)
+{
+    Err=tar-speed1;
+    add=p*(Err-last_err)+i*(Err)+d*(Err+next_err-2*last_err);
+    pwm+=add;
+    pwm_control();
+    next_err=last_err;
+    last_err=Err;
+    return pwm;
+}
